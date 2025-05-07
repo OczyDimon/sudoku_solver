@@ -1,3 +1,8 @@
+import cv2
+import numpy as np
+from datetime import datetime as dt
+
+
 def group(values, n):
     """
     Сгруппировать значения values в список, состоящий из списков по n элементов
@@ -39,7 +44,7 @@ def find_empty_positions(grid):
     for i in range(len(grid)):
         for j in range(len(grid[i])):
             if grid[i][j] == ".":
-                return (i, j)
+                return i, j
 
 
 def find_possible_values(grid, pos):
@@ -54,7 +59,49 @@ def find_possible_values(grid, pos):
     return result
 
 
-def solve(grid):
+def empty_grid():
+    gray = (17, 32, 50)
+    yellow = (230, 249, 255)
+
+    img = (np.ones((271, 271, 3)) * yellow).astype(np.uint8)
+
+    # img = cv2.rectangle(img, (0, 0), (200, 200), (255, 0, 0), 2)
+
+    for i in range(10):
+        img = cv2.line(img, (30 * i, 0), (30 * i, 270), gray, 2)
+        img = cv2.line(img, (0, 30 * i), (270, 30 * i), gray, 2)
+
+    return img
+
+
+def solved_to_image(grid):
+    img = empty_grid()
+
+    grid = [['5', '3', '4', '6', '7', '8', '9', '1', '2'],
+            ['6', '7', '2', '1', '9', '5', '3', '4', '8'],
+            ['1', '9', '8', '3', '4', '2', '5', '6', '7'],
+            ['8', '5', '9', '7', '6', '1', '4', '2', '3'],
+            ['4', '2', '6', '8', '5', '3', '7', '9', '1'],
+            ['7', '1', '3', '9', '2', '4', '8', '5', '6'],
+            ['9', '6', '1', '5', '3', '7', '2', '8', '4'],
+            ['2', '8', '7', '4', '1', '9', '6', '3', '5'],
+            ['3', '4', '5', '2', '8', '6', '1', '7', '9']]
+
+    for i in range(9):
+        for j in range(9):
+            cords = (4 + 30 * i, 26 + 30 * j)
+            img = cv2.putText(img, grid[j][i], cords, cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 0), 2)
+
+    now = dt.now().strftime('%Y-%m-%d_%H-%M-%S')
+
+    filename = f'temp/solved_{now}.png'
+
+    cv2.imwrite(f'static/{filename}', img)
+
+    return filename
+
+
+def solve_sudoku(grid):
     """ Решение пазла, заданного в grid
     """
 
@@ -67,7 +114,7 @@ def solve(grid):
 
     for value in possible_values:
         grid[empty_position[0]][empty_position[1]] = value
-        if solve(grid) == -1:
+        if solve_sudoku(grid) == -1:
             continue
         else:
             return grid
@@ -89,3 +136,6 @@ def check_solution(solution):
             return False
     else:
         return True
+
+
+solved_to_image(1)

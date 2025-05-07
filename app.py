@@ -1,4 +1,5 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, url_for
+from solver import solve_sudoku, check_solution, solved_to_image, empty_grid
 
 app = Flask(__name__)
 
@@ -16,19 +17,24 @@ def solve():
 @app.route('/sudoku', methods=['POST'])
 def sudoku():
     photo = request.files
-    solved = '5 3 . |. 7 . |. . .\n' \
-             '6 . . |1 9 5 |. . .\n' \
-             '. 9 8 |. . . |. 6 .\n' \
-             '------+------+------\n'\
-             '8 . . |. 6 . |. . 3\n'\
-             '4 . . |8 . 3 |. . 1\n' \
-             '7 . . |. 2 . |. . 6\n' \
-             '------+------+------\n' \
-             '. 6 . |. . . |2 8 .\n' \
-             '. . . |4 1 9 |. . 5\n' \
-             '. . . |. 8 . |. 7 9\n'
+    grid = [['5', '3', '.', '.', '7', '.', '.', '.', '.'],
+            ['6', '.', '.', '1', '9', '5', '.', '.', '.'],
+            ['.', '9', '8', '.', '.', '.', '.', '6', '.'],
+            ['8', '.', '.', '.', '6', '.', '.', '.', '3'],
+            ['4', '.', '.', '8', '.', '3', '.', '.', '1'],
+            ['7', '.', '.', '.', '2', '.', '.', '.', '6'],
+            ['.', '6', '.', '.', '.', '.', '2', '8', '.'],
+            ['.', '.', '.', '4', '1', '9', '.', '.', '5'],
+            ['.', '.', '.', '.', '8', '.', '.', '7', '9']]
+    # solvable = False
     solvable = True
-    return render_template('sudoku.html', solved=solved, solvable=solvable)
+    if solvable:
+        filename = solved_to_image(solve_sudoku(grid))
+
+    else:
+        filename = 'empty_grid.png'
+
+    return render_template('sudoku.html', image=url_for("static", filename=filename), solvable=solvable)
 
 
 app.run()
