@@ -1,6 +1,4 @@
-# sudoku_solver
+# Sudoku Solver
+## Проект по интеллектуальным системам.
 
-#TODO:
-/about
-readme.md
-connect
+Распознаёт Sudoku с фото и выдаёт решение.
