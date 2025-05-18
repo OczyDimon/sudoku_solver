@@ -1,5 +1,8 @@
 from flask import Flask, request, render_template, url_for
-from solver import solve_sudoku, check_solution, solved_to_image, empty_grid
+from solver import solve_sudoku, solved_to_image, check_solution
+from sudoku_recognition import recognize_img
+import cv2
+
 
 app = Flask(__name__)
 
@@ -16,25 +19,31 @@ def solve():
 
 @app.route('/sudoku', methods=['POST'])
 def sudoku():
-    photo = request.files
-    grid = [['5', '3', '.', '.', '7', '.', '.', '.', '.'],
-            ['6', '.', '.', '1', '9', '5', '.', '.', '.'],
-            ['.', '9', '8', '.', '.', '.', '.', '6', '.'],
-            ['8', '.', '.', '.', '6', '.', '.', '.', '3'],
-            ['4', '.', '.', '8', '.', '3', '.', '.', '1'],
-            ['7', '.', '.', '.', '2', '.', '.', '.', '6'],
-            ['.', '6', '.', '.', '.', '.', '2', '8', '.'],
-            ['.', '.', '.', '4', '1', '9', '.', '.', '5'],
-            ['.', '.', '.', '.', '8', '.', '.', '7', '9']]
-    # solvable = False
-    solvable = True
-    if solvable:
-        filename = solved_to_image(solve_sudoku(grid))
+    if request.method == 'POST':
+        photo = request.files['photo']
+        photo.save(f"uploads/{photo.filename}")
+        img = cv2.imread(f"uploads/{photo.filename}")
+        grid, solvable = recognize_img(img)
 
-    else:
-        filename = 'empty_grid.png'
+        solved = solve_sudoku(grid)
 
-    return render_template('sudoku.html', image=url_for("static", filename=filename), solvable=solvable)
+        filename = 'numbers/0.png'
+
+        if solved == -1:
+            solvable = False
+
+        else:
+            if solvable:
+                if check_solution(solved):
+                    filename = solved_to_image(solved)
+
+                else:
+                    solvable = False
+
+            else:
+                solvable = False
+
+        return render_template('sudoku.html', image=url_for("static", filename=filename), solvable=solvable)
 
 
 app.run()

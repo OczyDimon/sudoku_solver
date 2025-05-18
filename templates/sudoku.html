@@ -34,29 +34,34 @@
             line-height: 1.6;
             color: #7f8c8d;
         }
-        .upload-box {
-            width: 300px;
-            height: 200px;
-            margin: 0 auto;
-            padding: 20px;
-            border: 2px dashed #3498db;
-            border-radius: 10px;
-            background: #f8f9fa;
-        }
-
-        .submit-btn {
-            margin-top: 15px;
-            padding: 10px 20px;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
 
         #photo:valid + label {
             color: green;
             font-weight: bold;
+        }
+        .big-button {
+            display: inline-block;
+            padding: 20px 50px;
+            font-size: 1.5rem;
+            color: white;
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .big-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #2980b9, #27ae60);
+        }
+
+        .big-button:active {
+            transform: translateY(0);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
@@ -64,13 +69,16 @@
     <div class="header">
         <h1>Решение судоку</h1>
         {% if solvable == True %}
-        <img src={{ image }} >
+            <img src={{ image }} >
         {% else %}
         <p>
             Судоку не может быть решено, если вы считаете, что произошла ошибка,
             то попробуйте загрузить фото еще раз
         </p>
         {% endif %}
+    </div>
+    <div>
+        <a href="/" class="big-button">В главное меню!</a>
     </div>
 
 
