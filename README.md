@@ -15,6 +15,10 @@
 
 ![img.png](images/img.png)
 
+Пример отправки такого файла:
+
+![img.png](images/image_2.png)
+
 ![img.png](images/img2.png)
 
 В случае, если может быть решено:
